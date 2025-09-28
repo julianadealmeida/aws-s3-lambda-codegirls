@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Desafio - Automação com AWS Lambda e S3
+
+Resources:
+  DesafioS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: desafio-dio-s3-lambda
+
+  DesafioLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: desafio-dio-lambda-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaS3Policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:HeadObject
+                Resource: arn:aws:s3:::desafio-dio-s3-lambda/*
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "*"
+
+  DesafioLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: desafio-dio-s3-lambda
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt DesafioLambdaRole.Arn
+      Timeout: 30
+      CodeUri: .
+      Events:
+        S3Event:
+          Type: S3
+          Properties:
+            Bucket: !Ref DesafioS3Bucket
+            Events: s3:ObjectCreated:*
+
+Outputs:
+  BucketName:
+    Description: Desafio bucket S3
+    Value: !Ref DesafioS3Bucket
+  LambdaName:
+    Description: Desafio Lambda
+    Value: !Ref DesafioLambdaFunction
