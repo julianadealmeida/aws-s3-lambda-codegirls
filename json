@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "eventVersion": "2.1",
+      "eventSource": "aws:s3",
+      "awsRegion": "sa-east-1",
+      "eventTime": "2025-09-28T15:30:00.000Z",
+      "eventName": "ObjectCreated:Put",
+      "s3": {
+        "bucket": {
+          "name": "desafio-dio-s3-lambda"
+        },
+        "object": {
+          "key": "teste.txt",
+          "size": 2048,
+          "eTag": "\"a1b2c3d4e5f67890123456789abcdef0\""
+        }
+      }
+    }
+  ]
+}
+
