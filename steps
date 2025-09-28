@@ -1,0 +1,16 @@
+sam validate
+sam package \
+  --template-file template.yaml \
+  --s3-bucket meu-bucket-deploy-dio \
+  --output-template-file packaged.yaml \
+  --region sa-east-1
+
+sam deploy \
+  --template-file packaged.yaml \
+  --stack-name desafio-dio-lambda-s3 \
+  --capabilities CAPABILITY_IAM \
+  --region sa-east-1
+
+aws s3 cp exemplo.txt s3://desafio-dio-s3-lambda/ --region sa-east-1
+
+aws logs tail /aws/lambda/desafio-dio-s3-lambda --region sa-east-1 --follow
